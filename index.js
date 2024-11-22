@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public'))); // Sirve archivos estáticos
 app.get('/', (req, res) => {
-    res.send('¡Hola, tu aplicación está corriendo!');
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Conexión a MongoDB Atlas
