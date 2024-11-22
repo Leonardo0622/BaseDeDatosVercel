@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Registro y Login</title>
+</head>
+<body>
+    <h1>Bienvenidos</h1>
+
+    <!-- Formulario de Registro -->
+    <section id="register-section">
+        <h2>Registro</h2>
+        <form id="register-form">
+            <input type="text" id="register-name" placeholder="Nombre" required>
+            <input type="email" id="register-email" placeholder="Correo" required>
+            <input type="password" id="register-password" placeholder="Contraseña" required>
+            <button type="submit">Registrar</button>
+        </form>
+    </section>
+
+    <br>
+
+    <!-- Formulario de Login -->
+    <section id="login-section">
+        <h2>Login</h2>
+        <form id="login-form">
+            <input type="email" id="login-email" placeholder="Correo" required>
+            <input type="password" id="login-password" placeholder="Contraseña" required>
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+    </section>
+
+    <br>
+
+    <!-- Lista de Usuarios -->
+    <section id="user-section" style="display: none;">
+        <h2>Lista de Usuarios</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="user-table"></tbody>
+        </table>
+    </section>
+
+    <script>
+        // Función para registrar un usuario
+        document.getElementById('register-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById('register-name').value;
+            const correo = document.getElementById('register-email').value;
+            const contraseña = document.getElementById('register-password').value;
+
+            fetch('/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre, correo, contraseña })
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message || 'Usuario registrado con éxito'))
+            .catch(error => console.error('Error al registrar usuario:', error));
+        });
+
+        // Función para iniciar sesión
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const correo = document.getElementById('login-email').value;
+            const contraseña = document.getElementById('login-password').value;
+
+            fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ correo, contraseña })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message === "Inicio de sesión exitoso") {
+                    alert(data.message);
+                    document.getElementById('login-section').style.display = 'none';
+                    document.getElementById('register-section').style.display = 'none';
+                    document.getElementById('user-section').style.display = 'block';
+                    loadUsers();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error('Error al iniciar sesión:', error));
+        });
+
+        // Función para cargar los usuarios
+
+        function loadUsers() {
+    fetch('/users')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Datos de usuarios:', data); // Verifica qué datos estás recibiendo
+            const tableBody = document.getElementById('user-table');
+            tableBody.innerHTML = ''; // Limpia la tabla antes de recargar
+            data.forEach(user => {
+                // Verifica si los nombres de las propiedades son correctos
+                const row = `<tr>
+                    <td>${user._id}</td>
+                    <td>${user.name || user.nombre}</td> <!-- Usa el nombre correcto de la propiedad -->
+                    <td>${user.email || user.correo}</td> <!-- Usa el nombre correcto de la propiedad -->
+                    <td>
+                        <button onclick="editUser('${user._id}', '${user.name || user.nombre}', '${user.email || user.correo}')">Editar</button>
+                        <button onclick="deleteUser('${user._id}')">Eliminar</button>
+                    </td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+        })
+        .catch(error => console.error('Error al obtener usuarios:', error));
+}
+
+
+
+        // Función para editar usuario
+        function editUser(id, currentName, currentEmail) {
+    const newName = prompt("Nuevo nombre:", currentName);
+    const newEmail = prompt("Nuevo correo:", currentEmail);
+
+    // Si el nombre y correo son válidos, enviamos la solicitud PUT
+    if (newName && newEmail) {
+        fetch(`/users/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: newName, email: newEmail })  // Solo mandamos 'name' y 'email'
+        })
+        .then(response => response.json()) // Recibe la respuesta del servidor
+        .then(updatedUser => {
+            console.log('Usuario actualizado:', updatedUser);  // Verifica los datos actualizados
+            loadUsers(); // Recarga la lista de usuarios
+        })
+        .catch(error => console.error('Error al editar usuario:', error));
+    }
+}
+
+
+
+
+
+
+        // Función para eliminar usuario
+        function deleteUser(id) {
+            if (confirm("¿Estás seguro de eliminar este usuario?")) {
+                fetch(`/users/${id}`, { method: 'DELETE' })
+                    .then(() => loadUsers()) // Recargar la lista de usuarios
+                    .catch(error => console.error('Error al eliminar usuario:', error));
+            }
+        }
+    </script>
+</body>
+</html>

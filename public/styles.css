@@ -1,0 +1,109 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+}
+
+h1 {
+    color: #4CAF50;
+    margin-bottom: 40px;
+}
+
+/* Sección de formularios (login y registro) */
+section {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;  /* Mantener 400px para login y registro */
+    margin: 20px;
+}
+
+/* Estilo de los títulos */
+h2 {
+    text-align: center;
+    color: #4CAF50;
+    margin-bottom: 20px;
+}
+
+/* Inputs comunes */
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Botón de submit */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Estilos de la tabla de usuarios */
+table {
+    width: 100%;
+    max-width: 600px; /* Cambiado a 600px para la tabla */
+    margin: 30px auto; /* Centrado automático */
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* Estilos de botones en la tabla */
+button.edit, button.delete {
+    width: 45%;
+    margin: 5px 2%;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button.edit {
+    background-color: #FFA500;
+}
+
+button.delete {
+    background-color: #FF6347;
+}
+
+button.edit:hover {
+    background-color: #FF8C00;
+}
+
+button.delete:hover {
+    background-color: #FF4500;
+}
